@@ -24,6 +24,37 @@ else if avisit="Month 3" then avisitn=3;
 else if avisit="Month 6" then avisitn=6;
 run;
 
+Proc sort data=vs1 out=vs2 (keep=usubjid paramcd aval ablfl avisit avisitn ady);
+where ablfl="Y";
+by usubjid paramcd;
+run;
+
+proc sort data=vs1 out= vs3(Keep=usubjid paramcd avala ablfl avisit avisitn);
+where ablfl ne 'Y' and ady >= 1;
+by usubjid paramcd;
+run;
+
+data base (rename=(aval=base));
+set vs2 vs3;
+by usubjid;
+run;
+
+Proc sort data=vs2; by usubjid; run;
+Proc sort data=vs3; by usubjid; run;
+data base (keep=usubjid paramcd aval avisit avisitn );
+set vs2 vs3;
+by usubjid;
+run;
+
+Proc sort data=vs1; by usubjid paramcd; run;
+proc sort data=base; by usubjid paramcd; run;
+
+data vs4;
+merge vs1 base (keep=usubjid base paramcd);
+by usubjid paramcd;
+run;
+
+
 if paramcd='sysbp' and ((aval>180 or CHG>40) or (Aval<90 or CHG
 else if paramcd='DIABP' and ((AVAL>105 or CHG>30) or (AVAL<50
 else if parmacd='HR' and ((AVAL>105 or CHG>30) or (AVAL<50 or CHG
