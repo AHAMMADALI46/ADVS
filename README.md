@@ -78,5 +78,5 @@ run;
 data base;
 set vs1;
 if vsblfl="Y" and aval ne. Then base=aval;
-run;
+run;..
 
